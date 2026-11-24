@@ -1,0 +1,55 @@
+"use client"
+
+import { useTheme } from "next-themes"
+import { useMediaQuery } from "usehooks-ts"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "light" } = useTheme()
+  // Below 1024px the race panel docks at the bottom, so toasts go to the top.
+  // Desktop: over the map, not the chat, raised above the map's ad overlay (bottom 12px + ~81px tall).
+  const desktop = useMediaQuery("(min-width: 1024px)", { initializeWithValue: false })
+
+  return (
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      position={desktop ? "bottom-left" : "top-center"}
+      offset={desktop ? { bottom: 108, left: 16 } : undefined}
+      className="toaster group"
+      icons={{
+        success: (
+          <CircleCheckIcon className="size-4" />
+        ),
+        info: (
+          <InfoIcon className="size-4" />
+        ),
+        warning: (
+          <TriangleAlertIcon className="size-4" />
+        ),
+        error: (
+          <OctagonXIcon className="size-4" />
+        ),
+        loading: (
+          <Loader2Icon className="size-4 animate-spin" />
+        ),
+      }}
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+          "--border-radius": "var(--radius)",
+        } as React.CSSProperties
+      }
+      toastOptions={{
+        classNames: {
+          toast: "cn-toast",
+        },
+      }}
+      {...props}
+    />
+  )
+}
+
+export { Toaster }
